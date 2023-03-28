@@ -55,8 +55,10 @@ router.post('/config', auth, async (req, res) => {
 
 router.post('/session', async (req, res) => {
   try {
-    const AUTH_SECRET_KEY = process.env.AUTH_SECRET_KEY
-    const hasAuth = isNotEmptyString(AUTH_SECRET_KEY)
+    // const AUTH_SECRET_KEY = process.env.AUTH_SECRET_KEY
+    // const hasAuth = isNotEmptyString(AUTH_SECRET_KEY)
+		const AUTH_SECRET_KEYS = process.env.AUTH_SECRET_KEYS.split(',')
+		const hasAuth = isNonEmptyArray(AUTH_SECRET_KEYS)
     res.send({ status: 'Success', message: '', data: { auth: hasAuth, model: currentModel() } })
   }
   catch (error) {
@@ -70,8 +72,17 @@ router.post('/verify', async (req, res) => {
     if (!token)
       throw new Error('Secret key is empty')
 
-    if (process.env.AUTH_SECRET_KEY !== token)
-      throw new Error('密钥无效 | Secret key is invalid')
+    // if (process.env.AUTH_SECRET_KEY !== token)
+    //   throw new Error('密钥无效 | Secret key is invalid')
+		let ok = false
+		for (const key of process.env.AUTH_SECRET_KEYS.split(',')) {
+			if (token == key) {
+				ok = true
+				break
+			}
+		}
+		if (!ok)
+			throw new Error('密钥无效 | Secret key is invalid')
 
     res.send({ status: 'Success', message: 'Verify successfully', data: null })
   }

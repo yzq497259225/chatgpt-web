@@ -17,3 +17,7 @@ export function isBoolean<T extends boolean>(value: T | unknown): value is boole
 export function isFunction<T extends (...args: any[]) => any | void | never>(value: T | unknown): value is T {
   return Object.prototype.toString.call(value) === '[object Function]'
 }
+
+export function isNonEmptyArray<T>(value: T[] | unknown): value is T[] {
+	return Array.isArray(value) && value.length > 0;
+}

@@ -73,10 +73,15 @@ router.post('/verify', async (req, res) => {
 	try {
 		const { token } = req.body as { token: string }
 		if (!token)
-			throw new Error('Secret key is empty')
+			throw new Error('密钥为空 | Secret key is empty')
 		const AUTH_SECRET_KEY = await getAsync(token)
-		if (!AUTH_SECRET_KEY) throw new Error('密钥无效 | Secret key is invalid')
-		res.send({ status: 'Success', message: 'Verify successfully', data: null })
+		if (!AUTH_SECRET_KEY){
+			throw new Error('密钥无效 | Secret key is invalid')
+		}else if(AUTH_SECRET_KEY > 0) {
+			res.send({ status: 'Success', message: '验证成功 | Verify successfully', data: null })
+		}else {
+			throw new Error('访问次数用完 | Maximum access exceeded')
+		}
 	} catch (error) {
 		res.send({ status: 'Fail', message: error.message, data: null })
 	}

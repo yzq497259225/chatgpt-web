@@ -149,7 +149,7 @@ async function fetchBalance() {
 }
 
 
-async function chatConfig(redisKey) {
+async function chatConfig(redisKey: string) {
   const balance = await fetchBalance()
   const reverseProxy = process.env.API_REVERSE_PROXY ?? '-'
   const httpsProxy = (process.env.HTTPS_PROXY || process.env.ALL_PROXY) ?? '-'

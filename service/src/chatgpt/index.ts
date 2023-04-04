@@ -10,8 +10,12 @@ import { sendResponse } from '../utils'
 import { isNotEmptyString } from '../utils/is'
 import type { ApiModel, ChatContext, ChatGPTUnofficialProxyAPIOptions, ModelConfig } from '../types'
 import type { RequestOptions } from './types'
+import redis from 'redis'
+import { promisify } from 'util'
 
 const { HttpsProxyAgent } = httpsProxyAgent
+const client = redis.createClient({ host: "127.0.0.1", port: "6379", password: "dajiahaowoshizhushuocheng" })
+const getAsync = promisify(client.get).bind(client)
 
 dotenv.config()
 
@@ -144,16 +148,18 @@ async function fetchBalance() {
   }
 }
 
-async function chatConfig() {
+
+async function chatConfig(redisKey) {
   const balance = await fetchBalance()
   const reverseProxy = process.env.API_REVERSE_PROXY ?? '-'
   const httpsProxy = (process.env.HTTPS_PROXY || process.env.ALL_PROXY) ?? '-'
+	const times = await getAsync(redisKey)
   const socksProxy = (process.env.SOCKS_PROXY_HOST && process.env.SOCKS_PROXY_PORT)
     ? (`${process.env.SOCKS_PROXY_HOST}:${process.env.SOCKS_PROXY_PORT}`)
     : '-'
   return sendResponse<ModelConfig>({
     type: 'Success',
-    data: { apiModel, reverseProxy, timeoutMs, socksProxy, httpsProxy, balance },
+    data: { apiModel, reverseProxy, timeoutMs, socksProxy, httpsProxy, balance, times },
   })
 }
 

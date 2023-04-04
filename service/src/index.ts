@@ -48,9 +48,12 @@ router.post('/chat-process', [auth, limiter], async (req, res) => {
 	}
 })
 
-router.post('/config', auth, async (req, res) => {
+router.post('/config', async (req, res) => {
 	try {
-		const response = await chatConfig()
+		const Authorization = req.header('Authorization')
+		const key = Authorization.replace('Bearer ', '').trim()
+		console.log("authKey: ", key)
+		const response = await chatConfig(key)
 		res.send(response)
 	}
 	catch (error) {

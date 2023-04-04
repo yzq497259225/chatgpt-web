@@ -12,6 +12,7 @@ interface ConfigState {
   socksProxy?: string
   httpsProxy?: string
   balance?: string
+  times?: number
 }
 
 const authStore = useAuthStore()
@@ -57,6 +58,7 @@ onMounted(() => {
       <p>{{ $t("setting.timeout") }}：{{ config?.timeoutMs ?? '-' }}</p>
       <p>{{ $t("setting.socks") }}：{{ config?.socksProxy ?? '-' }}</p>
       <p>{{ $t("setting.httpsProxy") }}：{{ config?.httpsProxy ?? '-' }}</p>
+      <p>{{ $t("setting.times") }}：{{ config?.times ?? '-' }}</p>
     </div>
   </NSpin>
 </template>
